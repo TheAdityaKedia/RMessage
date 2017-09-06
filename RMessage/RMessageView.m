@@ -690,10 +690,10 @@ static NSMutableDictionary *globalDesignDictionary;
 - (void)setupShadow
 {
     if (_messageViewDesignDictionary[@"shadowColor"]) {
-        self.layer.shadowColor = [self colorForString:[_messageViewDesignDictionary valueForKey:@"shadowColor"]];
+        self.layer.shadowColor = [[self colorForString:[_messageViewDesignDictionary valueForKey:@"shadowColor"]] CGColor];
     }
     if (_messageViewDesignDictionary[@"shadowOpacity"]) {
-        id shadowOpacity = [_messageViewDesignDictionary valueForKey:@"shadowOpacity"]
+        id shadowOpacity = [_messageViewDesignDictionary valueForKey:@"shadowOpacity"];
         self.layer.shadowOpacity = [shadowOpacity floatValue];
     }
     if (_messageViewDesignDictionary[@"shadowOffsetX"] && _messageViewDesignDictionary[@"shadowOffsetY"] ) {

@@ -717,7 +717,7 @@ static NSMutableDictionary *globalDesignDictionary;
     NSLayoutConstraint *imgViewCenterY = [NSLayoutConstraint constraintWithItem:self.iconImageView
                                                                       attribute:NSLayoutAttributeCenterY
                                                                       relatedBy:NSLayoutRelationEqual
-                                                                         toItem:self.titleSubtitleContainerView
+                                                                         toItem:self.titleLabel
                                                                       attribute:NSLayoutAttributeCenterY
                                                                      multiplier:1.f
                                                                        constant:0.f];
@@ -727,14 +727,14 @@ static NSMutableDictionary *globalDesignDictionary;
                                                                          toItem:self
                                                                       attribute:NSLayoutAttributeLeading
                                                                      multiplier:1.f
-                                                                       constant:15.f];
+                                                                       constant:7.5f];
     NSLayoutConstraint *imgViewTrailing = [NSLayoutConstraint constraintWithItem:self.iconImageView
                                                                        attribute:NSLayoutAttributeTrailing
                                                                        relatedBy:NSLayoutRelationEqual
                                                                           toItem:self.titleSubtitleContainerView
                                                                        attribute:NSLayoutAttributeLeading
                                                                       multiplier:1.f
-                                                                        constant:-15.f];
+                                                                        constant:-7.5f];
     NSLayoutConstraint *imgViewBottom = [NSLayoutConstraint constraintWithItem:self.iconImageView
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationLessThanOrEqual

@@ -391,6 +391,7 @@ static NSMutableDictionary *globalDesignDictionary;
   [self setupImagesAndBackground];
   [self setupTitleLabel];
   [self setupSubTitleLabel];
+  [self setupShadow];
 }
 
 - (void)setupLayout
@@ -686,41 +687,79 @@ static NSMutableDictionary *globalDesignDictionary;
   }
 }
 
-- (void)setupIconImageView
-{
-  self.iconImageView.contentMode = UIViewContentModeScaleAspectFit;
-  self.iconImageView.translatesAutoresizingMaskIntoConstraints = NO;
 
-  NSLayoutConstraint *imgViewCenterY = [NSLayoutConstraint constraintWithItem:self.iconImageView
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.titleSubtitleContainerView
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                   multiplier:1.f
-                                                                     constant:0.f];
-  NSLayoutConstraint *imgViewLeading = [NSLayoutConstraint constraintWithItem:self.iconImageView
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                   multiplier:1.f
-                                                                     constant:15.f];
-  NSLayoutConstraint *imgViewTrailing = [NSLayoutConstraint constraintWithItem:self.iconImageView
-                                                                     attribute:NSLayoutAttributeTrailing
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.titleSubtitleContainerView
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                    multiplier:1.f
-                                                                      constant:-15.f];
-  NSLayoutConstraint *imgViewBottom = [NSLayoutConstraint constraintWithItem:self.iconImageView
-                                                                   attribute:NSLayoutAttributeBottom
-                                                                   relatedBy:NSLayoutRelationLessThanOrEqual
-                                                                      toItem:self
-                                                                   attribute:NSLayoutAttributeBottom
-                                                                  multiplier:1.f
-                                                                    constant:-10.f];
-  [self addSubview:self.iconImageView];
-  [[self class] activateConstraints:@[imgViewCenterY, imgViewLeading, imgViewTrailing, imgViewBottom] inSuperview:self];
+- (void)setupSubTitleLabel
+{
+    id subTitleFontSizeValue = [_messageViewDesignDictionary valueForKey:@"subTitleFontSize"];
+    if (!subTitleFontSizeValue) {
+        subTitleFontSizeValue = [_messageViewDesignDictionary valueForKey:@"subtitleFontSize"];
+    }
+    
+    CGFloat subTitleFontSize = [subTitleFontSizeValue floatValue];
+    NSString *subTitleFontName = [_messageViewDesignDictionary valueForKey:@"subTitleFontName"];
+    if (!subTitleFontName) {
+        subTitleFontName = [_messageViewDesignDictionary valueForKey:@"subtitleFontName"];
+    }
+    
+    if (subTitleFontName) {
+        _subtitleLabel.font = [UIFont fontWithName:subTitleFontName size:subTitleFontSize];
+    } else if (subTitleFontSize) {
+        _subtitleLabel.font = [UIFont systemFontOfSize:subTitleFontSize];
+    }
+    
+    self.subtitleLabel.textAlignment =
+    [self textAlignmentForString:[_messageViewDesignDictionary valueForKey:@"subtitleTextAlignment"]];
+    
+    UIColor *subTitleTextColor = [self colorForString:[_messageViewDesignDictionary valueForKey:@"subTitleTextColor"]];
+    if (!subTitleTextColor) {
+        subTitleTextColor = [self colorForString:[_messageViewDesignDictionary valueForKey:@"subtitleTextColor"]];
+    }
+    if (!subTitleTextColor) {
+        subTitleTextColor = _titleLabel.textColor;
+    }
+    
+    _subtitleLabel.text = _subtitle ? _subtitle : @"";
+    if (subTitleTextColor) _subtitleLabel.textColor = subTitleTextColor;
+    
+    UIColor *subTitleShadowColor =
+    [self colorForString:[_messageViewDesignDictionary valueForKey:@"subTitleShadowColor"]];
+    if (!subTitleShadowColor) {
+        subTitleShadowColor = [self colorForString:[_messageViewDesignDictionary valueForKey:@"subtitleShadowColor"]];
+    }
+    
+    if (subTitleShadowColor) _subtitleLabel.shadowColor = subTitleShadowColor;
+    id subTitleShadowOffsetX = [_messageViewDesignDictionary valueForKey:@"subTitleShadowOffsetX"];
+    id subTitleShadowOffsetY = [_messageViewDesignDictionary valueForKey:@"subTitleShadowOffsetY"];
+    if (!subTitleShadowOffsetX) {
+        subTitleShadowOffsetX = [_messageViewDesignDictionary valueForKey:@"subtitleShadowOffsetX"];
+    }
+    if (!subTitleShadowOffsetY) {
+        subTitleShadowOffsetY = [_messageViewDesignDictionary valueForKey:@"subtitleShadowOffsetY"];
+    }
+    if (subTitleShadowOffsetX && subTitleShadowOffsetY) {
+        _subtitleLabel.shadowOffset = CGSizeMake([subTitleShadowOffsetX floatValue], [subTitleShadowOffsetY floatValue]);
+    }
+}
+
+- (void)setupShadow
+{
+    if (_messageViewDesignDictionary[@"shadowColor"]) {
+        self.layer.shadowColor = [self colorForString:[_messageViewDesignDictionary valueForKey:@"shadowColor"]];
+    }
+    if (_messageViewDesignDictionary[@"shadowOpacity"]) {
+        self.layer.shadowOpacity = [_messageViewDesignDictionary valueForKey:@"shadowOpacity"];
+    }
+    if (_messageViewDesignDictionary[@"shadowOffsetX"] && _messageViewDesignDictionary[@"shadowOffsetY"] ) {
+        id shadowOffsetX = [_messageViewDesignDictionary valueForKey:@"shadowOffsetX"];
+        id shadowOffsetY = [_messageViewDesignDictionary valueForKey:@"shadowOffsetY"];
+        self.layer.shadowOffset = CGSizeMake([shadowOffsetX floatValue], [shadowOffsetY floatValue]);
+        self.layer.masksToBounds = NO;
+    }
+    if (_messageViewDesignDictionary[@"shadowRadius"]) {
+        id shadowRadius = [_messageViewDesignDictionary valueForKey:@"shadowRadius"];
+        messageView.layer.shadowRadius = [shadowRadius floatValue];
+        self.layer.masksToBounds = NO;
+    }
 }
 
 - (void)setupGestureRecognizers
